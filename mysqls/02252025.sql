@@ -1,6 +1,6 @@
 CREATE TABLE `students` (
-  `student_id` UNSIGNED INT,
-  `student_name` VARCHAR(50),
+  `student_id` INT UNSIGNED,
+  `student_name` VARCHAR(50) NOT NULL,
   `parent_name` VARCHAR(50),
   `parent_phone_number` VARCHAR(10),
   `exam_date` DATE,
@@ -16,52 +16,59 @@ CREATE TABLE `students` (
   `coach_plan_db` VARCHAR(50),
   `coach_student_db` VARCHAR(50),
   `goal_description` VARCHAR(50),
-  `created_at` TIMESTAMP,
-  `updated_at` TIMESTAMP,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`student_id`)
 );
 
+CREATE TABLE `subjects` (
+  `subject_id` INT UNSIGNED,
+  `subject_name` VARCHAR(50) NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`subject_id`)
+);
+
 CREATE TABLE `subfields` (
-  `subfield_id` UNSIGNED INT,
-  `subfield_name` VARCHAR(50),
-  `subject_id` UNSIGNED INT,
-  `subject_name` VARCHAR(50),
-  `created_at` TIMESTAMP,
-  `updated_at` TIMESTAMP,
+  `subfield_id` INT UNSIGNED,
+  `subject_id` INT UNSIGNED NOT NULL,
+  `subfield_name` VARCHAR(50) NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`subfield_id`),
-  KEY `UNIQUE` (`subject_id`)
+  FOREIGN KEY (`subject_id`) REFERENCES `subjects`(`subject_id`)
 );
 
 CREATE TABLE `default_blocks` (
-  `default_block_id` UNSIGNED INT,
-  `subfield_id` UNSIGNED INT,
-  `block_name` VARCHAR(50),
-  `block_order` UNSIGNED INT,
-  `space` INT,
-  `speed` UNSIGNED INT,
-  `size` UNSIGNED INT,
-  `average_expected_time` UNSIGNED INT,
-  `created_at` TIMESTAMP,
-  `updated_at` TIMESTAMP,
+  `default_block_id` INT UNSIGNED,
+  `subfield_id` INT UNSIGNED NOT NULL,
+  `block_name` VARCHAR(50) NOT NULL,
+  `block_order` INT UNSIGNED NOT NULL,
+  `space` INT NOT NULL DEFAULT 0,
+  `speed` INT UNSIGNED NOT NULL DEFAULT 1,
+  `size` INT UNSIGNED NOT NULL,
+  `average_expected_time` INT UNSIGNED NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`default_block_id`),
   FOREIGN KEY (`subfield_id`) REFERENCES `subfields`(`subfield_id`)
 );
 
 CREATE TABLE `actual_blocks` (
-  `actual_block_id` UNSIGNED INT,
-  `student_id` UNSIGNED INT,
-  `subfield_id` UNSIGNED INT,
-  `default_block_id` UNSIGNED INT,
-  `actual_block_name` VARCHAR(50),
-  `space` INT,
-  `speed` UNSIGNED INT,
-  `number_of_repeats` UNSIGNED INT,
-  `head_order` UNSIGNED INT,
-  `tail_order` UNSIGNED INT,
-  `start_day` DATE,
-  `end_day` DATE,
-  `created_at` TIMESTAMP,
-  `updated_at` TIMESTAMP,
+  `actual_block_id` INT UNSIGNED,
+  `student_id` INT UNSIGNED NOT NULL,
+  `subfield_id` INT UNSIGNED NOT NULL,
+  `default_block_id` INT UNSIGNED NOT NULL,
+  `actual_block_name` VARCHAR(50) NOT NULL,
+  `space` INT NOT NULL DEFAULT 0,
+  `speed` INT NOT NULL DEFAULT 0,
+  `number_of_repeats` INT UNSIGNED NOT NULL DEFAULT 0,
+  `head_order` INT UNSIGNED NOT NULL,
+  `tail_order` INT UNSIGNED NOT NULL,
+  `start_day` DATE NOT NULL,
+  `end_day` DATE NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`actual_block_id`),
   FOREIGN KEY (`default_block_id`) REFERENCES `default_blocks`(`default_block_id`),
   FOREIGN KEY (`student_id`) REFERENCES `students`(`student_id`),
@@ -69,130 +76,120 @@ CREATE TABLE `actual_blocks` (
 );
 
 CREATE TABLE `problems` (
-  `problem_id` UNSIGNED INT,
-  `subfield_id` UNSIGNED INT,
-  `default_block_id` UNSIGNED INT,
-  `student_id` UNSIGNED INT,
-  `problem_name` VARCHAR(50),
-  `answer` VARCHAR(510),
-  `area` VARCHAR(50),
+  `problem_id` INT UNSIGNED,
+  `subfield_id` INT UNSIGNED NOT NULL,
+  `default_block_id` INT UNSIGNED NOT NULL,
+  `student_id` INT UNSIGNED NOT NULL,
+  `problem_name` VARCHAR(50) NOT NULL,
+  `answer` VARCHAR(510) NOT NULL,
+  `area` VARCHAR(50) NOT NULL,
   `section` VARCHAR(50),
   `subsection` VARCHAR(50),
   `reference` VARCHAR(50),
-  `problem_level` UNSIGNED INT,
+  `problem_level` INT UNSIGNED NOT NULL,
   `option1` VARCHAR(50),
   `option2` VARCHAR(50),
   `option3` VARCHAR(50),
   `option4` VARCHAR(50),
-  `created_at` TIMESTAMP,
-  `updated_at` TIMESTAMP,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`problem_id`),
-  FOREIGN KEY (`subfield_id`) REFERENCES `subfields`(`subfield_id`),
   FOREIGN KEY (`default_block_id`) REFERENCES `default_blocks`(`default_block_id`),
-  FOREIGN KEY (`student_id`) REFERENCES `students`(`student_id`)
+  FOREIGN KEY (`student_id`) REFERENCES `students`(`student_id`),
+  FOREIGN KEY (`subfield_id`) REFERENCES `subfields`(`subfield_id`)
 );
 
 CREATE TABLE `student_problems` (
-  `student_problem_id` UNSIGNED INT,
-  `student_id` UNSIGNED INT,
-  `problem_id` UNSIGNED INT,
-  `actual_block_id` UNSIGNED INT,
+  `student_problem_id` INT UNSIGNED,
+  `student_id` INT UNSIGNED NOT NULL,
+  `problem_id` INT UNSIGNED NOT NULL,
+  `actual_block_id` INT UNSIGNED NOT NULL,
   `answer_status` INT,
-  `is_difficult` BOOLEAN,
+  `is_difficult` TINYINT(1) NOT NULL,
   `understanding_level` INT,
   `try_count` INT,
   `difficult_count` INT,
   `wrong_count` INT,
   `review_level` INT,
   `review_count_down` INT,
-  `created_at` TIMESTAMP,
-  `updated_at` TIMESTAMP,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`student_problem_id`),
   FOREIGN KEY (`problem_id`) REFERENCES `problems`(`problem_id`),
-  FOREIGN KEY (`student_id`) REFERENCES `students`(`student_id`),
-  FOREIGN KEY (`actual_block_id`) REFERENCES `actual_blocks`(`actual_block_id`)
+  FOREIGN KEY (`actual_block_id`) REFERENCES `actual_blocks`(`actual_block_id`),
+  FOREIGN KEY (`student_id`) REFERENCES `students`(`student_id`)
 );
 
 CREATE TABLE `trackers` (
-  `tracker_id` UNSIGNED INT,
-  `student_id` UNSIGNED INT,
-  `subfield_id` UNSIGNED INT,
-  `actual_block_id` UNSIGNED INT,
-  `student_problem_id` UNSIGNED INT,
-  `order` UNSIGNED INT,
+  `tracker_id` INT UNSIGNED,
+  `student_id` INT UNSIGNED NOT NULL,
+  `subfield_id` INT UNSIGNED NOT NULL,
+  `actual_block_id` INT UNSIGNED NOT NULL,
+  `student_problem_id` INT UNSIGNED NOT NULL,
+  `order` INT UNSIGNED,
   `remaining_space` INT,
-  `is_rest` boolean,
+  `is_rest` TINYINT(1) NOT NULL DEFAULT 0,
   `lap` INT,
-  `create_at` TIMESTAMP,
-  `updated_at` TIMESTAMP,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`tracker_id`),
-  FOREIGN KEY (`subfield_id`) REFERENCES `subfields`(`subfield_id`),
   FOREIGN KEY (`student_id`) REFERENCES `students`(`student_id`),
-  FOREIGN KEY (`actual_block_id`) REFERENCES `actual_blocks`(`actual_block_id`),
-  FOREIGN KEY (`student_problem_id`) REFERENCES `student_problems`(`student_problem_id`)
+  FOREIGN KEY (`subfield_id`) REFERENCES `subfields`(`subfield_id`),
+  FOREIGN KEY (`student_problem_id`) REFERENCES `student_problems`(`student_problem_id`),
+  FOREIGN KEY (`actual_block_id`) REFERENCES `actual_blocks`(`actual_block_id`)
 );
 
 CREATE TABLE `remainings` (
-  `remaining_id` UNSIGNED INT,
-  `student_id` UNSIGNED INT,
-  `subfield_id` UNSIGNED INT,
+  `remaining_id` INT UNSIGNED,
+  `student_id` INT UNSIGNED NOT NULL,
+  `subfield_id` INT UNSIGNED NOT NULL,
   `target_day` DATE,
   `exam_day` DATE,
-  `created_at` TIMESTAMP,
-  `updated_at` TIMESTAMP,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`remaining_id`),
-  FOREIGN KEY (`student_id`) REFERENCES `students`(`student_id`),
-  FOREIGN KEY (`subfield_id`) REFERENCES `subfields`(`subfield_id`)
-);
-
-CREATE TABLE `students_subfields` (
-  `student_id` UNSIGNED INT,
-  `subfield_id` UNSIGNED INT,
-  `created_at` TIMESTAMP,
-  `updated_at` TIMESTAMP,
-  PRIMARY KEY (`student_id`, `subfield_id`),
   FOREIGN KEY (`subfield_id`) REFERENCES `subfields`(`subfield_id`),
   FOREIGN KEY (`student_id`) REFERENCES `students`(`student_id`)
 );
 
 CREATE TABLE `todo_counters` (
-  `todo_counters_id` UNSIGNED INT,
-  `student_id` UNSIGNED INT,
-  `subfield_id` UNSIGNED INT,
-  `count` INT,
-  `created_at` TIMESTAMP,
-  `updated_at` TIMESTAMP,
+  `todo_counters_id` INT UNSIGNED,
+  `student_id` INT UNSIGNED NOT NULL,
+  `subfield_id` INT UNSIGNED NOT NULL,
+  `count` INT DEFAULT 0,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`todo_counters_id`),
   FOREIGN KEY (`student_id`) REFERENCES `students`(`student_id`),
   FOREIGN KEY (`subfield_id`) REFERENCES `subfields`(`subfield_id`)
 );
 
 CREATE TABLE `student_subject_information` (
-  `student_subject_information_id` UNSIGNED INT,
-  `student_id` UNSIGNED INT,
-  `subject_id` UNSIGNED INT,
+  `student_subject_information_id` INT UNSIGNED,
+  `student_id` INT UNSIGNED NOT NULL,
+  `subject_id` INT UNSIGNED NOT NULL,
   `subject_level` VARCHAR(50),
   `goal_description` VARCHAR(50),
   `goal_level` VARCHAR(50),
   `review_size` INT,
-  `review_space` INT,
-  `created_at` TIMESTAMP,
-  `updated_at` TIMESTAMP,
+  `review_space` INT DEFAULT 0,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`student_subject_information_id`),
-  FOREIGN KEY (`subject_id`) REFERENCES `subfields`(`subject_id`),
+  FOREIGN KEY (`subject_id`) REFERENCES `subjects`(`subject_id`),
   FOREIGN KEY (`student_id`) REFERENCES `students`(`student_id`)
 );
 
 CREATE TABLE `Rests` (
-  `rest_id` UNSIGNED INT,
-  `student_id` UNSIGNED INT,
-  `subfield_id` UNSIGNED INT,
-  `start_date` DATE,
-  `end_date` DATE,
-  `created_at` TIMESTAMP,
-  `updated_at` TIMESTAMP,
+  `rest_id` INT UNSIGNED,
+  `student_id` INT UNSIGNED NOT NULL,
+  `subfield_id` INT UNSIGNED NOT NULL,
+  `start_date` DATE NOT NULL,
+  `end_date` DATE NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`rest_id`),
-  FOREIGN KEY (`student_id`) REFERENCES `students`(`student_id`),
-  FOREIGN KEY (`subfield_id`) REFERENCES `subfields`(`subfield_id`)
+  FOREIGN KEY (`subfield_id`) REFERENCES `subfields`(`subfield_id`),
+  FOREIGN KEY (`student_id`) REFERENCES `students`(`student_id`)
 );
 
