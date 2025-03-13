@@ -1,0 +1,35 @@
+name: Flyway Migrations
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  run-flyway-automation:
+    runs-on: windows-latest  # so we can run PowerShell easily
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      
+      - name: Install Flyway
+        run: |
+          # You can install Flyway in many ways. For example, via Chocolatey:
+          choco install flyway --version=9.20.0 --yes
+        shell: powershell
+
+      # Optionally, if your script or flyway config needs environment variables:
+      - name: Set environment variables (if you store DB credentials as secrets)
+        shell: powershell
+        run: |
+          $env:FLYWAY_URL = "${{ secrets.DB_URL }}"
+          $env:FLYWAY_USER = "${{ secrets.DB_USER }}"
+          $env:FLYWAY_PASSWORD = "${{ secrets.DB_PASSWORD }}"
+          Write-Host "Environment variables set for Flyway."
+
+      - name: Run PowerShell automation script
+        shell: pwsh
+        run: |
+          .\scripts\flyway-automation.ps1
