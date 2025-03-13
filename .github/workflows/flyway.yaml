@@ -29,6 +29,13 @@ jobs:
           $env:FLYWAY_PASSWORD = "${{ secrets.DB_PASSWORD }}"
           Write-Host "Environment variables set for Flyway."
 
+      - name: Show current directory
+        shell: pwsh
+        run: |
+          Write-Host "PWD: $(Get-Location)"
+          dir
+          dir .\scripts
+
       - name: Run PowerShell automation script
         shell: pwsh
         run: |
