@@ -1,7 +1,7 @@
 # Paths
-$projectPath    = "C:/Users/jesus/OneDrive/Documents/VScode/Repositories/01-study/aws_mysql/migrations"
-$rollbackPath   = Join-Path $projectPath "db_migrations/down"
-$changelogPath  = Join-Path $projectPath "changelog.md"
+$migrationPath = "./migrations/up"
+$rollbackPath   = "./migrations/down"
+$changelogPath  = "./migrations/changelog.md"
 
 ##########################################################
 # Function: Update-Changelog
@@ -26,10 +26,12 @@ function Update-Changelog($Version, $Description, $Type, $UpFile, $DownFile) {
 Write-Output "🚀 Running Flyway Migrate (Up Migration)..."
 
 # Pass environment variables as CLI arguments:
+
 flyway migrate `
   -url="jdbc:mysql://distribution-database.cxsi68guc5rq.ap-northeast-1.rds.amazonaws.com:3306/kisotetsu_03132025" `
   -user="admin" `
-  -password="korowatakun22"
+  -password="korowatakun22" `
+  -locations="filesystem:$migrationPath"
 
 # Capture the info output after migrate
 $flywayInfoOutput = flyway info `
