@@ -36,7 +36,7 @@ CREATE TABLE `subjects` (
 CREATE TABLE `subfields` (
   `subfield_name` ENUM('現代文','古文','漢文','数学','Reading','Listening&Speaking','Writing','物理','化学','生物','日本史','世界史','地理') NOT NULL,
   `subfield_id` INT UNSIGNED AUTO_INCREMENT,
-  `subject_id` INT,
+  `subject_id` INT UNSIGNED NOT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`subfield_id`),
