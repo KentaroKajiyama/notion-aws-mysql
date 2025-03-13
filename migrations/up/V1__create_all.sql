@@ -1,3 +1,67 @@
+CREATE TABLE `students` (
+  `student_id` INT UNSIGNED AUTO_INCREMENT,
+  `student_notion_user_id` VARCHAR(50),
+  `student_name` VARCHAR(50) NOT NULL,
+  `parent_name` VARCHAR(50),
+  `exam_date` DATE,
+  `parent_phone_number` VARCHAR(10),
+  `student_only_page_id` VARCHAR(50),
+  `student_overview_page_id` VARCHAR(50),
+  `todo_db_id` VARCHAR(50),
+  `wrong_db_id` VARCHAR(50),
+  `is_difficult_db_id` VARCHAR(50),
+  `remaining_db_id` VARCHAR(50),
+  `student_only_plan_db_id` VARCHAR(50),
+  `coach_page_id` VARCHAR(50),
+  `student_progress_db_id` VARCHAR(50),
+  `coach_plan_db_id` VARCHAR(50),
+  `student_detail_info_db_id` VARCHAR(50),
+  `coach_irregular_db_id` VARCHAR(50),
+  `coach_record_db_id` VARCHAR(50),
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `goal_description` VARCHAR(50),
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`student_id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `subjects` (
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `subject_name` ENUM('国語','数学','英語','物理','化学','生物','日本史','世界史','地理') NOT NULL,
+  `subject_id` INT UNSIGNED AUTO_INCREMENT,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`subject_id`),
+  UNIQUE (`subject_name`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `subfields` (
+  `subfield_name` ENUM('現代文','古文','漢文','数学','Reading','Listening&Speaking','Writing','物理','化学','生物','日本史','世界史','地理') NOT NULL,
+  `subfield_id` INT UNSIGNED AUTO_INCREMENT,
+  `subject_id` INT,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`subfield_id`),
+  FOREIGN KEY (`subject_id`) REFERENCES `subjects`(`subject_id`),
+  UNIQUE (`subfield_name`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `default_blocks` (
+  `subfield_id` INT NOT NULL,
+  `default_block_id` INT UNSIGNED AUTO_INCREMENT,
+  `block_name` VARCHAR(50) NOT NULL,
+  `space` INT NOT NULL,
+  `notion_page_id` VARCHAR(50),
+  `lap` INT NOT NULL,
+  `is_tail` TINYINT NOT NULL,
+  `block_order` INT UNSIGNED NOT NULL,
+  `speed` INT NOT NULL,
+  `average_expected_time` INT,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `block_size` INT NOT NULL,
+  `problem_level` ENUM('基礎１','基礎２','基礎３') NOT NULL,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`default_block_id`),
+  FOREIGN KEY (`subfield_id`) REFERENCES `subfields`(`subfield_id`)
+) ENGINE=InnoDB;
 
 CREATE TABLE `actual_blocks` (
   `actual_block_id` INT UNSIGNED AUTO_INCREMENT,
@@ -79,71 +143,6 @@ CREATE TABLE `problem_options` (
   PRIMARY KEY (`problem_option_id`),
   FOREIGN KEY (`problem_id`) REFERENCES `problems`(`problem_id`),
   FOREIGN KEY (`notion_db_property_id`) REFERENCES `notion_db_properties`(`notion_db_property_id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `students` (
-  `student_id` INT UNSIGNED AUTO_INCREMENT,
-  `student_notion_user_id` VARCHAR(50),
-  `student_name` VARCHAR(50) NOT NULL,
-  `parent_name` VARCHAR(50),
-  `exam_date` DATE,
-  `parent_phone_number` VARCHAR(10),
-  `student_only_page_id` VARCHAR(50),
-  `student_overview_page_id` VARCHAR(50),
-  `todo_db_id` VARCHAR(50),
-  `wrong_db_id` VARCHAR(50),
-  `is_difficult_db_id` VARCHAR(50),
-  `remaining_db_id` VARCHAR(50),
-  `student_only_plan_db_id` VARCHAR(50),
-  `coach_page_id` VARCHAR(50),
-  `student_progress_db_id` VARCHAR(50),
-  `coach_plan_db_id` VARCHAR(50),
-  `student_detail_info_db_id` VARCHAR(50),
-  `coach_irregular_db_id` VARCHAR(50),
-  `coach_record_db_id` VARCHAR(50),
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `goal_description` VARCHAR(50),
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`student_id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `subjects` (
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `subject_name` ENUM('国語','数学','英語','物理','化学','生物','日本史','世界史','地理') NOT NULL,
-  `subject_id` INT UNSIGNED AUTO_INCREMENT,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`subject_id`),
-  UNIQUE (`subject_name`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `subfields` (
-  `subfield_name` ENUM('現代文','古文','漢文','数学','Reading','Listening&Speaking','Writing','物理','化学','生物','日本史','世界史','地理') NOT NULL,
-  `subfield_id` INT UNSIGNED AUTO_INCREMENT,
-  `subject_id` INT,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`subfield_id`),
-  FOREIGN KEY (`subject_id`) REFERENCES `subjects`(`subject_id`),
-  UNIQUE (`subfield_name`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `default_blocks` (
-  `subfield_id` INT NOT NULL,
-  `default_block_id` INT UNSIGNED AUTO_INCREMENT,
-  `block_name` VARCHAR(50) NOT NULL,
-  `space` INT NOT NULL,
-  `notion_page_id` VARCHAR(50),
-  `lap` INT NOT NULL,
-  `is_tail` TINYINT NOT NULL,
-  `block_order` INT UNSIGNED NOT NULL,
-  `speed` INT NOT NULL,
-  `average_expected_time` INT,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `block_size` INT NOT NULL,
-  `problem_level` ENUM('基礎１','基礎２','基礎３') NOT NULL,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`default_block_id`),
-  FOREIGN KEY (`subfield_id`) REFERENCES `subfields`(`subfield_id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `student_subject_information` (
