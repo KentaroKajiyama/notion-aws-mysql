@@ -27,13 +27,13 @@ Write-Output "🚀 Running Flyway Migrate (Up Migration)..."
 
 # Pass environment variables as CLI arguments:
 flyway migrate `
-  -url="distribution-database.cxsi68guc5rq.ap-northeast-1.rds.amazonaws.com:3306" `
+  -url="jdbc:mysql://distribution-database.cxsi68guc5rq.ap-northeast-1.rds.amazonaws.com:3306/kisotetsu_03132025" `
   -user="admin" `
   -password="korowatakun22"
 
 # Capture the info output after migrate
 $flywayInfoOutput = flyway info `
-  -url="distribution-database.cxsi68guc5rq.ap-northeast-1.rds.amazonaws.com:3306" `
+  -url="jdbc:mysql://distribution-database.cxsi68guc5rq.ap-northeast-1.rds.amazonaws.com:3306/kisotetsu_03132025" `
   -user="admin" `
   -password="korowatakun22"
 
@@ -63,14 +63,14 @@ foreach ($line in $appliedMigrations) {
 Write-Output "🔄 Running Flyway Undo (Down Migration)..."
 
 flyway migrate `
-  -url="distribution-database.cxsi68guc5rq.ap-northeast-1.rds.amazonaws.com:3306" `
+  -url="jdbc:mysql://distribution-database.cxsi68guc5rq.ap-northeast-1.rds.amazonaws.com:3306/kisotetsu_03132025" `
   -user="admin" `
   -password="korowatakun22" `
   -locations="filesystem:$rollbackPath"
 
 # Capture the info output after down-run
 $flywayInfoOutput = flyway info `
-  -url="distribution-database.cxsi68guc5rq.ap-northeast-1.rds.amazonaws.com:3306" `
+  -url="jdbc:mysql://distribution-database.cxsi68guc5rq.ap-northeast-1.rds.amazonaws.com:3306/kisotetsu_03132025" `
   -user="admin" `
   -password="korowatakun22"
 
