@@ -8,7 +8,7 @@ jobs:
   run-flyway:
     runs-on: windows-latest
     steps:
-      - name: Check out repo
+      - name: Check out code
         uses: actions/checkout@v2
 
       - name: Install Java 17
@@ -17,18 +17,23 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Download & Extract Flyway (Java 17)
+      - name: Download & Extract Flyway
         shell: powershell
         run: |
           $FlywayVersion = "9.20.0"
           $DownloadUrl = "https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/$FlywayVersion/flyway-commandline-$FlywayVersion-windows-x64.zip"
+
           Write-Host "Downloading Flyway $FlywayVersion..."
           Invoke-WebRequest -Uri $DownloadUrl -OutFile flyway.zip
           Expand-Archive -Path flyway.zip -DestinationPath .\flyway
-          $FlywayDir = ".\flyway\flyway-commandline-$FlywayVersion-windows-x64"
-          $env:PATH += ";$((Get-Location).Path)\$FlywayDir"
+          
+          # The extracted folder is something like: .\flyway\flyway-commandline-9.20.0-windows-x64
+          $FlywayDir = (Get-ChildItem -Directory .\flyway | Select-Object -First 1).FullName
 
-      - name: Run PowerShell automation script
+          # Append the Flyway bin directory to the PATH for subsequent steps
+          # The runner automatically reads any lines appended to $GITHUB_PATH and updates PATH
+          "$FlywayDir" | Out-File -Append $Env:GITHUB_PATH
+
+      - name: Run PowerShell Automation Script
         shell: pwsh
-        run: |
-          .\scripts\flyway-automation.ps1
+        run: .\scripts\flyway-automation.ps1
