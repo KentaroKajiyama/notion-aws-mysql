@@ -17,7 +17,7 @@ jobs:
       - name: Install Flyway
         run: |
           # You can install Flyway in many ways. For example, via Chocolatey:
-          choco install flyway --version=9.20.0 --yes
+          choco install flyway --yes
         shell: powershell
 
       # Optionally, if your script or flyway config needs environment variables:
