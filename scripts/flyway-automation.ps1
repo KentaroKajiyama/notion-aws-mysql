@@ -27,15 +27,15 @@ Write-Output "🚀 Running Flyway Migrate (Up Migration)..."
 
 # Pass environment variables as CLI arguments:
 flyway migrate `
-  -url="$env:DB_URL" `
-  -user="$env:DB_USER" `
-  -password="$env:DB_PASSWORD"
+  -url="distribution-database.cxsi68guc5rq.ap-northeast-1.rds.amazonaws.com:3306" `
+  -user="admin" `
+  -password="korowatakun22"
 
 # Capture the info output after migrate
 $flywayInfoOutput = flyway info `
-  -url="$env:DB_URL" `
-  -user="$env:DB_USER" `
-  -password="$env:DB_PASSWORD"
+  -url="distribution-database.cxsi68guc5rq.ap-northeast-1.rds.amazonaws.com:3306" `
+  -user="admin" `
+  -password="korowatakun22"
 
 ##########################################################
 # 2) Parse "Applied" lines in Flyway info
@@ -63,16 +63,16 @@ foreach ($line in $appliedMigrations) {
 Write-Output "🔄 Running Flyway Undo (Down Migration)..."
 
 flyway migrate `
-  -url="$env:DB_URL" `
-  -user="$env:DB_USER" `
-  -password="$env:DB_PASSWORD" `
+  -url="distribution-database.cxsi68guc5rq.ap-northeast-1.rds.amazonaws.com:3306" `
+  -user="admin" `
+  -password="korowatakun22" `
   -locations="filesystem:$rollbackPath"
 
 # Capture the info output after down-run
 $flywayInfoOutput = flyway info `
-  -url="$env:DB_URL" `
-  -user="$env:DB_USER" `
-  -password="$env:DB_PASSWORD"
+  -url="distribution-database.cxsi68guc5rq.ap-northeast-1.rds.amazonaws.com:3306" `
+  -user="admin" `
+  -password="korowatakun22"
 
 ##########################################################
 # 4) Parse "Undone" lines in Flyway info
