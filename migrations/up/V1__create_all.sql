@@ -1,13 +1,3 @@
-CREATE TABLE `property_options` (
-  `notion_db_property_id` INT UNSIGNED NOT NULL,
-  `option_value` VARCHAR(50) NOT NULL,
-  `option_key` VARCHAR(50) NOT NULL,
-  `property_option_id` INT UNSIGNED AUTO_INCREMENT,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`property_option_id`),
-  FOREIGN KEY (`notion_db_property_id`) REFERENCES `notion_db_properties`(`notion_db_property_id`)
-) ENGINE=InnoDB;
-
 CREATE TABLE `notion_db_properties` (
   `program_name` VARCHAR(50) NOT NULL,
   `notion_db_property_id` INT UNSIGNED AUTO_INCREMENT,
@@ -19,6 +9,16 @@ CREATE TABLE `notion_db_properties` (
   UNIQUE (`property_type`),
   UNIQUE (`'property_name'`, `'db_name'`),
   UNIQUE (`'property_name'`, `'db_name'`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `property_options` (
+  `notion_db_property_id` INT UNSIGNED NOT NULL,
+  `option_value` VARCHAR(50) NOT NULL,
+  `option_key` VARCHAR(50) NOT NULL,
+  `property_option_id` INT UNSIGNED AUTO_INCREMENT,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`property_option_id`),
+  FOREIGN KEY (`notion_db_property_id`) REFERENCES `notion_db_properties`(`notion_db_property_id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `students` (
