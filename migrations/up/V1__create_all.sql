@@ -4,11 +4,12 @@ CREATE TABLE `notion_db_properties` (
   `db_name` VARCHAR(50) NOT NULL,
   `property_name` VARCHAR(50) NOT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `property_type` ENUM('UNKNOWN') NOT NULL,
+  `property_type` ENUM('title', 'rich_text', 'number', 'select', 'multi_select', 'date', 'formula', 'relation', 'rollup', 'people', 'files', 'checkbox', 'url', 'email', 'phone_number',
+  'created_time', 'created_by', 'last_edited_time', 'last_edited_by', 'status', 'unique_id', 'verification') NOT NULL,
   PRIMARY KEY (`notion_db_property_id`),
   UNIQUE (`property_type`),
-  UNIQUE (`'property_name'`, `'db_name'`),
-  UNIQUE (`'property_name'`, `'db_name'`)
+  UNIQUE (`property_name`, `db_name`),
+  UNIQUE (`property_name`, `db_name`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `property_options` (
