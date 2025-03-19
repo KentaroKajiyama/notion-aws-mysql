@@ -224,7 +224,7 @@ CREATE TABLE `student_subfield_traces` (
   PRIMARY KEY (`trace_id`),
   FOREIGN KEY (`subfield_id`) REFERENCES `subfields`(`subfield_id`),
   FOREIGN KEY (`student_id`) REFERENCES `students`(`student_id`),
-  UNIQUE (`studen_id`, `subfield_id`),
+  UNIQUE (`student_id`, `subfield_id`),
   UNIQUE (`student_id`, `subfield_id`)
 ) ENGINE=InnoDB;
 

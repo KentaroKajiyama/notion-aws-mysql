@@ -1,0 +1,14 @@
+DROP TABLE IF EXISTS `rests`;
+DROP TABLE IF EXISTS `student_subfield_traces`;
+DROP TABLE IF EXISTS `trackers`;
+DROP TABLE IF EXISTS `student_subject_information`;
+DROP TABLE IF EXISTS `problem_options`;
+DROP TABLE IF EXISTS `student_problems`;
+DROP TABLE IF EXISTS `problems`;
+DROP TABLE IF EXISTS `actual_blocks`;
+DROP TABLE IF EXISTS `default_blocks`;
+DROP TABLE IF EXISTS `subfields`;
+DROP TABLE IF EXISTS `subjects`;
+DROP TABLE IF EXISTS `students`;
+DROP TABLE IF EXISTS `property_options`;
+DROP TABLE IF EXISTS `notion_db_properties`;
