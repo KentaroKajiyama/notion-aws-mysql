@@ -1,5 +1,18 @@
-
+DROP TABLE IF EXISTS `rests`;
+DROP TABLE IF EXISTS `student_subfield_traces`;
+DROP TABLE IF EXISTS `trackers`;
+DROP TABLE IF EXISTS `student_subject_information`;
+DROP TABLE IF EXISTS `problem_options`;
+DROP TABLE IF EXISTS `student_problems`;
+DROP TABLE IF EXISTS `problems`;
+DROP TABLE IF EXISTS `actual_blocks`;
+DROP TABLE IF EXISTS `default_blocks`;
+DROP TABLE IF EXISTS `subfields`;
+DROP TABLE IF EXISTS `subjects`;
+DROP TABLE IF EXISTS `students`;
+DROP TABLE IF EXISTS `property_options`;
 DROP TABLE IF EXISTS `notion_db_properties`;
+
 CREATE TABLE `notion_db_properties` (
   `program_name` varchar(50) NOT NULL,
   `notion_db_property_id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -12,7 +25,7 @@ CREATE TABLE `notion_db_properties` (
 ) ENGINE=InnoDB;
 
 
-DROP TABLE IF EXISTS `property_options`;
+
 CREATE TABLE `property_options` (
   `notion_db_property_id` int unsigned NOT NULL,
   `option_value` varchar(50) NOT NULL,
@@ -25,7 +38,7 @@ CREATE TABLE `property_options` (
 ) ENGINE=InnoDB;
 
 
-DROP TABLE IF EXISTS `students`;
+
 CREATE TABLE `students` (
   `student_id` int unsigned NOT NULL AUTO_INCREMENT,
   `student_notion_user_id` varchar(50) DEFAULT NULL,
@@ -53,7 +66,7 @@ CREATE TABLE `students` (
   PRIMARY KEY (`student_id`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `subjects`;
+
 CREATE TABLE `subjects` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `subject_name` ENUM('国語','数学','英語','物理','化学','生物','日本史','世界史','地理') NOT NULL,
@@ -63,7 +76,7 @@ CREATE TABLE `subjects` (
   UNIQUE KEY `subject_name` (`subject_name`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `subfields`;
+
 CREATE TABLE `subfields` (
   `subfield_name` ENUM('現代文','古文','漢文','数学','Reading','Listening&Speaking','Writing','物理','化学','生物','日本史','世界史','地理') NOT NULL,
   `subfield_id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -76,7 +89,7 @@ CREATE TABLE `subfields` (
   CONSTRAINT `subfields_ibfk_1` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`subject_id`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `default_blocks`;
+
 CREATE TABLE `default_blocks` (
   `subfield_id` int unsigned NOT NULL,
   `default_block_id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -97,7 +110,7 @@ CREATE TABLE `default_blocks` (
   CONSTRAINT `default_blocks_ibfk_1` FOREIGN KEY (`subfield_id`) REFERENCES `subfields` (`subfield_id`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `actual_blocks`;
+
 CREATE TABLE `actual_blocks` (
   `actual_block_id` int unsigned NOT NULL AUTO_INCREMENT,
   `default_block_id` int unsigned DEFAULT NULL,
@@ -130,7 +143,7 @@ CREATE TABLE `actual_blocks` (
   CONSTRAINT `actual_blocks_ibfk_3` FOREIGN KEY (`subfield_id`) REFERENCES `subfields` (`subfield_id`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `problems`;
+
 CREATE TABLE `problems` (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -148,7 +161,7 @@ CREATE TABLE `problems` (
   CONSTRAINT `problems_ibfk_2` FOREIGN KEY (`subfield_id`) REFERENCES `subfields` (`subfield_id`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `student_problems`;
+
 CREATE TABLE `student_problems` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -177,7 +190,7 @@ CREATE TABLE `student_problems` (
   CONSTRAINT `student_problems_ibfk_3` FOREIGN KEY (`student_id`) REFERENCES `students` (`student_id`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `problem_options`;
+
 CREATE TABLE `problem_options` (
   `problem_option_id` int unsigned NOT NULL AUTO_INCREMENT,
   `problem_id` int unsigned NOT NULL,
@@ -192,7 +205,7 @@ CREATE TABLE `problem_options` (
   CONSTRAINT `problem_options_ibfk_2` FOREIGN KEY (`notion_db_property_id`) REFERENCES `notion_db_properties` (`notion_db_property_id`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `student_subject_information`;
+
 CREATE TABLE `student_subject_information` (
   `student_subject_information_id` int unsigned NOT NULL AUTO_INCREMENT,
   `subject_level` ENUM('基礎１','基礎２','基礎３') NOT NULL,
@@ -209,7 +222,7 @@ CREATE TABLE `student_subject_information` (
   CONSTRAINT `student_subject_information_ibfk_2` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`subject_id`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `trackers`;
+
 CREATE TABLE `trackers` (
   `subfield_id` int unsigned NOT NULL,
   `student_id` int unsigned NOT NULL,
@@ -233,7 +246,7 @@ CREATE TABLE `trackers` (
   CONSTRAINT `trackers_ibfk_4` FOREIGN KEY (`actual_block_id`) REFERENCES `actual_blocks` (`actual_block_id`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `student_subfield_traces`;
+
 CREATE TABLE `student_subfield_traces` (
   `subfield_id` int unsigned NOT NULL,
   `trace_id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -260,7 +273,7 @@ CREATE TABLE `student_subfield_traces` (
   CONSTRAINT `student_subfield_traces_ibfk_2` FOREIGN KEY (`student_id`) REFERENCES `students` (`student_id`)
 ) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS `rests`;
+
 CREATE TABLE `rests` (
   `notion_page_id` varchar(50) NOT NULL,
   `subfield_id` int unsigned NOT NULL,
