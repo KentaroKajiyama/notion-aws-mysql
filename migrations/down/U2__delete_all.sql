@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS `notion_db_properties`;
 CREATE TABLE `notion_db_properties` (
   `program_name` VARCHAR(50) NOT NULL,
   `notion_db_property_id` INT UNSIGNED AUTO_INCREMENT,
@@ -12,6 +13,7 @@ CREATE TABLE `notion_db_properties` (
   UNIQUE (`property_name`, `db_name`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `property_optoins`;
 CREATE TABLE `property_options` (
   `notion_db_property_id` INT UNSIGNED NOT NULL,
   `option_value` VARCHAR(50) NOT NULL,
@@ -22,6 +24,7 @@ CREATE TABLE `property_options` (
   FOREIGN KEY (`notion_db_property_id`) REFERENCES `notion_db_properties`(`notion_db_property_id`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `students`;
 CREATE TABLE `students` (
   `student_id` INT UNSIGNED AUTO_INCREMENT,
   `student_notion_user_id` VARCHAR(50),
@@ -48,6 +51,7 @@ CREATE TABLE `students` (
   PRIMARY KEY (`student_id`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `subjects`;
 CREATE TABLE `subjects` (
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `subject_name` ENUM('国語','数学','英語','物理','化学','生物','日本史','世界史','地理') NOT NULL,
@@ -57,6 +61,7 @@ CREATE TABLE `subjects` (
   UNIQUE (`subject_name`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `subfields`;
 CREATE TABLE `subfields` (
   `subfield_name` ENUM('現代文','古文','漢文','数学','Reading','Listening&Speaking','Writing','物理','化学','生物','日本史','世界史','地理') NOT NULL,
   `subfield_id` INT UNSIGNED AUTO_INCREMENT,
@@ -68,6 +73,7 @@ CREATE TABLE `subfields` (
   UNIQUE (`subfield_name`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `default_blocks`;
 CREATE TABLE `default_blocks` (
   `subfield_id` INT UNSIGNED NOT NULL,
   `default_block_id` INT UNSIGNED AUTO_INCREMENT,
@@ -87,6 +93,7 @@ CREATE TABLE `default_blocks` (
   FOREIGN KEY (`subfield_id`) REFERENCES `subfields`(`subfield_id`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `actual_blocks`;
 CREATE TABLE `actual_blocks` (
   `actual_block_id` INT UNSIGNED AUTO_INCREMENT,
   `default_block_id` INT UNSIGNED,
@@ -116,6 +123,7 @@ CREATE TABLE `actual_blocks` (
   UNIQUE (`student_actual_block_db_notion_page_id`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `problems`;
 CREATE TABLE `problems` (
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -131,6 +139,7 @@ CREATE TABLE `problems` (
   FOREIGN KEY (`subfield_id`) REFERENCES `subfields`(`subfield_id`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `student_problems`;
 CREATE TABLE `student_problems` (
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -157,6 +166,7 @@ CREATE TABLE `student_problems` (
   UNIQUE (`actual_block_id`, `problem_in_block_order`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `problem_options`;
 CREATE TABLE `problem_options` (
   `problem_option_id` INT UNSIGNED AUTO_INCREMENT,
   `problem_id` INT UNSIGNED NOT NULL,
@@ -169,6 +179,7 @@ CREATE TABLE `problem_options` (
   FOREIGN KEY (`notion_db_property_id`) REFERENCES `notion_db_properties`(`notion_db_property_id`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `student_subject_information`;
 CREATE TABLE `student_subject_information` (
   `student_subject_information_id` INT UNSIGNED AUTO_INCREMENT,
   `subject_level` ENUM('基礎１','基礎２','基礎３') NOT NULL,
@@ -183,6 +194,7 @@ CREATE TABLE `student_subject_information` (
   FOREIGN KEY (`subject_id`) REFERENCES `subjects`(`subject_id`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `trackers`;
 CREATE TABLE `trackers` (
   `subfield_id` INT UNSIGNED NOT NULL,
   `student_id` INT UNSIGNED NOT NULL,
@@ -202,6 +214,7 @@ CREATE TABLE `trackers` (
   FOREIGN KEY (`actual_block_id`) REFERENCES `actual_blocks`(`actual_block_id`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `student_subfield_traces`;
 CREATE TABLE `student_subfield_traces` (
   `subfield_id` INT UNSIGNED NOT NULL,
   `trace_id` INT UNSIGNED AUTO_INCREMENT,
@@ -228,6 +241,7 @@ CREATE TABLE `student_subfield_traces` (
   UNIQUE (`student_id`, `subfield_id`)
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `rests`;
 CREATE TABLE `rests` (
   `notion_page_id` VARCHAR(50) NOT NULL,
   `subfield_id` INT UNSIGNED NOT NULL,

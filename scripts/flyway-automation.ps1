@@ -3,6 +3,10 @@ $migrationPath = "./migrations/up"
 $rollbackPath   = "./migrations/down"
 $changelogPath  = "./migrations/changelog.md"
 
+if (!(Test-Path $changelogPath)) {
+  New-Item -ItemType File -Path $changelogPath | Out-Null
+}
+
 ##########################################################
 # Function: Update-Changelog
 # Purpose:  Appends an entry to changelog.md
@@ -17,7 +21,7 @@ function Update-Changelog($Version, $Description, $Type, $UpFile, $DownFile) {
 - **Up File:** `$UpFile`
 - **Down File:** `$DownFile`
 "@
-    Add-Content -Path $changelogPath -Value $entry
+  Add-Content -Path $changelogPath -Value $entry
 }
 
 ##########################################################
@@ -42,22 +46,23 @@ $flywayInfoOutput = flyway info `
 ##########################################################
 # 2) Parse "Applied" lines in Flyway info
 ##########################################################
-$appliedMigrations = $flywayInfoOutput | Select-String "Applied"
+$appliedMigrations = $flywayInfoOutput | Where-Object { $_ -match '^\|\s+\d+\s+\|\s+[^|]+' }
 
 foreach ($line in $appliedMigrations) {
-    if ($line -match "V(\d+)__([^\s]+)") {
-        $version   = $matches[1]
-        $fileName  = $matches[2]
-        $upFile    = "V$version__$fileName.sql"
-        $downFile  = "U$version__$fileName.sql"
+  if ($line -match '^\|\s+(\d+)\s+\|\s+([^\|]+)') {
+    $version   = $matches[1]
+    $fileName  = ($matches[2].Trim() -replace '\s+', '_')
+    $upFile    = "V$version__$fileName.sql"
+    $downFile  = "U$version__$fileName.sql"
 
-        Update-Changelog -Version $version `
-                         -Description $fileName `
-                         -Type "UP" `
-                         -UpFile $upFile `
-                         -DownFile $downFile
-    }
+    Update-Changelog -Version $version `
+                      -Description $fileName `
+                      -Type "UP" `
+                      -UpFile $upFile `
+                      -DownFile $downFile
+  }
 }
+
 
 ##########################################################
 # 3) Run Flyway undo (down-migrations)
